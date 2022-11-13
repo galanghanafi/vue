@@ -19,13 +19,23 @@ export default {
       awesome: true,
 
       // todo
+      hideCompleted: false,
       todos: [
-        { id: id++, text: "Learn HTML", status: "checked" },
-        { id: id++, text: "Learn JavaScript", status: "checked" },
-        { id: id++, text: "Learn Vue", status: "" },
+        { id: id++, text: "Learn HTML", status: true },
+        { id: id++, text: "Learn JavaScript", status: true },
+        { id: id++, text: "Learn Vue", status: false },
       ],
     };
   },
+
+  computed: {
+    filteredTodos() {
+      return this.hideCompleted
+        ? this.todos.filter((t) => !t.status)
+        : this.todos;
+    },
+  },
+
   methods: {
     // counter
     increment() {
@@ -59,6 +69,7 @@ export default {
       <p class="">{{ counter.count }}</p>
     </div>
   </div>
+
   <!-- 2 -->
   <div class="text-center p-5">
     <h1 class="text-lg font-black pb-2">2</h1>
@@ -72,6 +83,7 @@ export default {
     <!-- It Doing The Same -->
     <!-- <p v-text="text"></p> -->
   </div>
+
   <!-- 3 -->
   <div class="text-center p-5">
     <h1 class="text-lg font-black pb-2">3</h1>
@@ -84,11 +96,18 @@ export default {
   <div class="text-center p-5">
     <h1 class="text-lg font-black pb-2">4</h1>
     <!-- form -->
-    <div class="flex justify-center">
+    <div class="flex justify-evenly">
       <form @submit.prevent="addTodo" class="input input-bordered h-auto px-0">
         <input v-model="newTodo" type="text" class="input" />
         <button class="btn">Add Todo</button>
       </form>
+      <button
+        @click="hideCompleted = !hideCompleted"
+        class="btn mt-0.5 rounded-full absolute right-0 mr-5"
+        style="width: 100px"
+      >
+        {{ hideCompleted ? "showall" : "Hide Completed" }}
+      </button>
     </div>
     <!-- table -->
     <div class="overflow-x-auto w-full mt-6">
@@ -105,21 +124,16 @@ export default {
         </thead>
         <tbody>
           <!-- todos -->
-          <tr v-for="i in todos" :key="i.id">
+          <tr v-for="i in filteredTodos" :key="i.id">
             <th class="text-center">
-              <label>
-                <input
-                  v-if="i.status == 'checked'"
-                  checked
-                  type="checkbox"
-                  class="checkbox"
-                />
-                <input
-                  v-else="i.status != 'checked'"
-                  type="checkbox"
-                  class="checkbox"
-                />
-              </label>
+              <!-- <input
+                v-if="i.status"
+                v-model="i.status"
+                checked
+                type="checkbox"
+                class="checkbox"
+              /> -->
+              <input v-model="i.status" type="checkbox" class="checkbox" />
             </th>
             <td>
               <p>{{ i.text }}</p>
